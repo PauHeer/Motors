@@ -62,7 +62,7 @@ static void display_func() {
     glBegin(GL_TRIANGLES);
 
     // Color para la cara frontal
-    glColor3f(1.0f, 1.0f, 0.0f); // Color verde
+    glColor3f(0.0f, 1.0f, 0.0f); // Color verde
     // Cara frontal
     glVertex3f(-1.0f, -1.0f, 1.0f);
     glVertex3f(1.0f, -1.0f, 1.0f);
