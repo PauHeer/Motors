@@ -3,7 +3,6 @@
 #include <thread>
 #include <exception>
 #include <glm/glm.hpp>
-#include <SDL2/SDL_events.h>
 #include "MyWindow.h"
 using namespace std;
 
@@ -37,23 +36,12 @@ static void display_func() {
 	draw_triangle(u8vec4(255, 0, 0, 255), vec3(0.0, 0.0, 0.0), 0.5);
 }
 
-static bool processEvents() {
-	SDL_Event event;
-	while (SDL_PollEvent(&event)) {
-		switch (event.type) {
-		case SDL_QUIT:
-			return false;
-		}
-	}
-	return true;
-}
-
 int main(int argc, char** argv) {
 	MyWindow window("SDL2 Simple Example", WINDOW_SIZE.x, WINDOW_SIZE.y);
 
 	init_openGL();
 
-	while (processEvents()) {
+	while(window.processEvents() && window.isOpen()) {
 		const auto t0 = hrclock::now();
 		display_func();
 		window.swapBuffers();
