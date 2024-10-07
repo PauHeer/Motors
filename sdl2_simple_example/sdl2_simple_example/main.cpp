@@ -59,6 +59,9 @@ static void display_func() {
     // Aplica la rotación
     glRotatef(angle, 1.0f, 1.0f, 0.0f); // Rota alrededor del eje (1, 1, 0)
 
+   
+    //DIBUJA Y PINTA LAS CARAS
+
     glBegin(GL_TRIANGLES);
 
     // Color para la cara frontal
@@ -129,23 +132,25 @@ static void display_func() {
 
     glEnd();
 
-    // Dibuja las aristas del cubo
+
+    // DIBUJAR LOS EDGES
+
     glColor3f(0.0f, 0.0f, 0.0f); // Color negro para las aristas
     glBegin(GL_LINES);
 
-    // Aristas frontales
+    // Edges frontales
     glVertex3f(-1.0f, -1.0f, 1.0f); glVertex3f(1.0f, -1.0f, 1.0f);
     glVertex3f(1.0f, -1.0f, 1.0f); glVertex3f(1.0f, 1.0f, 1.0f);
     glVertex3f(1.0f, 1.0f, 1.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
     glVertex3f(-1.0f, 1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
 
-    // Aristas traseras
+    // Edges traseras
     glVertex3f(-1.0f, -1.0f, -1.0f); glVertex3f(1.0f, -1.0f, -1.0f);
     glVertex3f(1.0f, -1.0f, -1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
     glVertex3f(1.0f, 1.0f, -1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
     glVertex3f(-1.0f, 1.0f, -1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
 
-    // Conecta las aristas frontales y traseras
+    // Conecta los edges frontales y traseros
     glVertex3f(-1.0f, -1.0f, -1.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
     glVertex3f(1.0f, -1.0f, -1.0f); glVertex3f(1.0f, -1.0f, 1.0f);
     glVertex3f(1.0f, 1.0f, -1.0f); glVertex3f(1.0f, 1.0f, 1.0f);
@@ -154,7 +159,7 @@ static void display_func() {
     glEnd();
 
     // Incrementa el ángulo de rotación
-    angle += 0.75f;
+    angle += 1.0f;
 }
 
 int main(int argc, char** argv) {
