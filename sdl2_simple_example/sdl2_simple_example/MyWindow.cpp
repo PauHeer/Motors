@@ -62,7 +62,7 @@ void MyWindow::swapBuffers() const {
 
     if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("Menu")) {
-            if (ImGui::MenuItem("Adeu")) {
+            if (ImGui::MenuItem("Exit")) {
                 // ... codi activació
                 SDL_Event quit_event;
                 quit_event.type = SDL_QUIT;
