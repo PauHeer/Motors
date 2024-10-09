@@ -75,7 +75,7 @@ static void display_func() {
 
     // Mueve la cámara para alejar la vista axonométrica
     gluLookAt(8.0, 12.0, 10.0,   // Aleja la cámara moviéndola más lejos
-        2.8, 0.0, 0.0,   // Punto de enfoque (el centro de la escena)
+        3.0, 0.0, 0.0,   // Punto de enfoque (el centro de la escena)
         0.0, 1.0, 0.0);  // Vector de arriba (eje Y)
 
     // Renderiza el modelo
