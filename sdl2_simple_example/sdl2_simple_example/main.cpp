@@ -20,6 +20,7 @@ static const unsigned int FPS = 60;
 static const auto FRAME_DT = 1.0s / FPS;
 
 const aiScene* scene = nullptr;  // Variable global
+GLuint textureID;
 
 vector<vec3> vertices;
 vector<unsigned int> indices;
@@ -27,11 +28,36 @@ vector<unsigned int> indices;
 //Variable angulo rotación
 float angle = 0.0f;
 
+#define CHECKERS_HEIGHT 64
+#define CHECKERS_WIDTH 64
+
+GLubyte checkerImage[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];
+
+
 static void init_openGL() {
 	glewInit();
 	if (!GLEW_VERSION_3_0) throw exception("OpenGL 3.0 API is not available.");
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.5, 0.5, 0.5, 1.0);
+    glEnable(GL_TEXTURE_2D);
+    for (int i = 0; i < CHECKERS_HEIGHT; i++) {
+        for (int j = 0; j < CHECKERS_WIDTH; j++) {
+            int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
+            checkerImage[i][j][0] = (GLubyte)c;
+            checkerImage[i][j][1] = (GLubyte)c;
+            checkerImage[i][j][2] = (GLubyte)c;
+            checkerImage[i][j][3] = (GLubyte)255;
+        }
+    }
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT, 0,
+        GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
 }
 
 // Función para dibujar el modelo cargado
@@ -43,6 +69,7 @@ static void drawModel() {
     for (size_t i = 0; i < indices.size(); i += 3) {
         // Dibujar triángulos utilizando los índices
         glVertex3d(vertices[indices[i]].x, vertices[indices[i]].y, vertices[indices[i]].z);
+        glTexCoord3f(GLfloat s, GLfloat t, GLfloat r);
         glVertex3d(vertices[indices[i + 1]].x, vertices[indices[i + 1]].y, vertices[indices[i + 1]].z);
         glVertex3d(vertices[indices[i + 2]].x, vertices[indices[i + 2]].y, vertices[indices[i + 2]].z);
     }
