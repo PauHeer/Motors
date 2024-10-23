@@ -62,18 +62,24 @@ static void init_openGL() {
 
 // Función para dibujar el modelo cargado
 static void drawModel() {
-    // Establece un color
-    //glColor3f(1.0f, 1.0f, 1.0f); // Color blanco
+    glColor3f(1.0f, 1.0f, 1.0f); // Color blanco
 
     glBegin(GL_TRIANGLES);
     for (size_t i = 0; i < indices.size(); i += 3) {
-        // Dibujar triángulos utilizando los índices
+        // Primera coordenada de textura y vértice
+        glTexCoord2f(0.0f, 0.0f);  // Coord textura (s, t) para el primer vértice
         glVertex3d(vertices[indices[i]].x, vertices[indices[i]].y, vertices[indices[i]].z);
-        glTexCoord3f(GLfloat s, GLfloat t, GLfloat r);
+
+        // Segunda coordenada de textura y vértice
+        glTexCoord2f(1.0f, 0.0f);  // Coord textura (s, t) para el segundo vértice
         glVertex3d(vertices[indices[i + 1]].x, vertices[indices[i + 1]].y, vertices[indices[i + 1]].z);
+
+        // Tercera coordenada de textura y vértice
+        glTexCoord2f(0.5f, 1.0f);  // Coord textura (s, t) para el tercer vértice
         glVertex3d(vertices[indices[i + 2]].x, vertices[indices[i + 2]].y, vertices[indices[i + 2]].z);
     }
     glEnd();
+
 }
 
 //DIBUJAR TRIANGULO
