@@ -82,6 +82,10 @@ static void drawModel() {
 
 }
 
+
+float x = 0.0f;
+float y = 0.0f;
+float z = 0.0f;
 // Actualiza la función de visualización para mostrar el modelo en lugar del cubo
 static void display_func() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -89,17 +93,20 @@ static void display_func() {
     // Configura la proyección ortográfica para la vista axonométrica
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-25.0, 25.0, -25.0, 25.0, -20.0, 20.0);  // Ajusta el área visible en la pantalla
+    glOrtho(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);  // Ajusta el área visible en la pantalla
 
     // Configura la matriz de modelo
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
     // Mueve la cámara para alejar la vista axonométrica
-    gluLookAt(8.0, 12.0, 10.0,   // Aleja la cámara moviéndola más lejos
+    gluLookAt(x, y, z,   // Aleja la cámara moviéndola más lejos
         3.0, 0.0, 0.0,   // Punto de enfoque (el centro de la escena)
         0.0, 1.0, 0.0);  // Vector de arriba (eje Y)
 
+    /*x += 0.01f;
+    y += 0.01f;
+    z += 0.01f;*/
     // Renderiza el modelo
     drawModel();
 }
