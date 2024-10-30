@@ -104,9 +104,9 @@ static void display_func() {
         3.0, 0.0, 0.0,   // Punto de enfoque (el centro de la escena)
         0.0, 1.0, 0.0);  // Vector de arriba (eje Y)
 
-    /*x += 0.01f;
+    x += 0.01f;
     y += 0.01f;
-    z += 0.01f;*/
+    z += 0.01f;
     // Renderiza el modelo
     drawModel();
 }
