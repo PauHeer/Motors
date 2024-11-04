@@ -35,10 +35,10 @@ GLubyte checkerImage[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];
 
 
 static void init_openGL() {
-	glewInit();
-	if (!GLEW_VERSION_3_0) throw exception("OpenGL 3.0 API is not available.");
-	glEnable(GL_DEPTH_TEST);
-	glClearColor(0.5, 0.5, 0.5, 1.0);
+    glewInit();
+    if (!GLEW_VERSION_3_0) throw exception("OpenGL 3.0 API is not available.");
+    glEnable(GL_DEPTH_TEST);
+    glClearColor(0.5, 0.5, 0.5, 1.0);
     glEnable(GL_TEXTURE_2D);
     for (int i = 0; i < CHECKERS_HEIGHT; i++) {
         for (int j = 0; j < CHECKERS_WIDTH; j++) {
@@ -104,58 +104,82 @@ static void display_func() {
         3.0, 0.0, 0.0,   // Punto de enfoque (el centro de la escena)
         0.0, 1.0, 0.0);  // Vector de arriba (eje Y)
 
-    x += 0.01f;
+
+    /*x += 0.01f;
     y += 0.01f;
-    z += 0.01f;
+    z += 0.01f;*/
+
     // Renderiza el modelo
     drawModel();
 }
-
-//Main LaserGun
-
-int main(int argc, char** argv) {
-    // Inicializa la ventana y OpenGL
-    MyWindow window("SDL2 Simple Example", WINDOW_SIZE.x, WINDOW_SIZE.y);
-    init_openGL();
-
-    // Cargar el modelo 3D
-    const char* file = "BakerHouse.fbx"; // Ruta del archivo a cargar
-    const struct aiScene* scene = aiImportFile(file, aiProcess_Triangulate | aiProcess_GenNormals);
-    if (!scene) {
-        fprintf(stderr, "Error en cargar el archivo: %s\n", aiGetErrorString());
-        return -1;
+void keyboard(unsigned char key, int xMouse, int yMouse) {
+    switch (key) {
+    case 'w': // Aumentar X
+        x += 0.1f;
+        break;
+    case 's': // Disminuir X
+        x -= 0.1f;
+        break;
+    case 'a': // Aumentar Z
+        z -= 0.1f;
+        break;
+    case 'd': // Disminuir Z
+        z += 0.1f;
+        break;
+    case 'q': // Aumentar Y
+        y += 0.1f;
+        break;
+    case ' ': // Disminuir Y
+        y -= 0.1f;
+        break;
     }
+}
 
-    // Extraer vértices e índices de la malla cargada
-    for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
-        aiMesh* mesh = scene->mMeshes[i];
+    //Main LaserGun
 
-        // Extraer los vértices
-        for (unsigned int v = 0; v < mesh->mNumVertices; v++) {
-            aiVector3D vertex = mesh->mVertices[v];
-            vertices.emplace_back(vec3(vertex.x, vertex.y, vertex.z));
+    int main(int argc, char** argv) {
+        // Inicializa la ventana y OpenGL
+        MyWindow window("SDL2 Simple Example", WINDOW_SIZE.x, WINDOW_SIZE.y);
+        init_openGL();
+
+        // Cargar el modelo 3D
+        const char* file = "BakerHouse.fbx"; // Ruta del archivo a cargar
+        const struct aiScene* scene = aiImportFile(file, aiProcess_Triangulate | aiProcess_GenNormals);
+        if (!scene) {
+            fprintf(stderr, "Error en cargar el archivo: %s\n", aiGetErrorString());
+            return -1;
         }
 
-        // Extraer los índices de las caras
-        for (unsigned int f = 0; f < mesh->mNumFaces; f++) {
-            aiFace face = mesh->mFaces[f];
-            for (unsigned int j = 0; j < face.mNumIndices; j++) {
-                indices.push_back(face.mIndices[j]);
+        // Extraer vértices e índices de la malla cargada
+        for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
+            aiMesh* mesh = scene->mMeshes[i];
+
+            // Extraer los vértices
+            for (unsigned int v = 0; v < mesh->mNumVertices; v++) {
+                aiVector3D vertex = mesh->mVertices[v];
+                vertices.emplace_back(vec3(vertex.x, vertex.y, vertex.z));
+            }
+
+            // Extraer los índices de las caras
+            for (unsigned int f = 0; f < mesh->mNumFaces; f++) {
+                aiFace face = mesh->mFaces[f];
+                for (unsigned int j = 0; j < face.mNumIndices; j++) {
+                    indices.push_back(face.mIndices[j]);
+                }
             }
         }
+
+        aiReleaseImport(scene);
+
+        // Bucle principal de renderizado
+        while (window.processEvents() && window.isOpen()) {
+            const auto t0 = hrclock::now();
+            display_func();
+            window.swapBuffers();
+            const auto t1 = hrclock::now();
+            const auto dt = t1 - t0;
+            if (dt < FRAME_DT) this_thread::sleep_for(FRAME_DT - dt);
+        }
+
+        return 0;
     }
-
-    aiReleaseImport(scene);
-
-    // Bucle principal de renderizado
-    while (window.processEvents() && window.isOpen()) {
-        const auto t0 = hrclock::now();
-        display_func();
-        window.swapBuffers();
-        const auto t1 = hrclock::now();
-        const auto dt = t1 - t0;
-        if (dt < FRAME_DT) this_thread::sleep_for(FRAME_DT - dt);
-    }
-
-    return 0;
-}
