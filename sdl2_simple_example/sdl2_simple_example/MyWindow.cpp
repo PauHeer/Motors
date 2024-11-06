@@ -10,7 +10,6 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-
 using namespace std;
 
 MyWindow::MyWindow(const char* title, unsigned short width, unsigned short height){
@@ -90,6 +89,7 @@ bool loadTexture(const char* filename);
 bool MyWindow::processEvents(IEventProcessor* event_processor) {
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
+
         if (event_processor) event_processor->processEvent(e);
 
         switch (e.type) {

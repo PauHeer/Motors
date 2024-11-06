@@ -30,12 +30,19 @@ vector<vec3> vertices;
 vector<glm::vec2> texCoords;  // Vector para almacenar las coordenadas de textura
 vector<unsigned int> indices;
 
-// Variable de ángulo de rotación
-float angle = 0.0f;
-
 float x = 0.0f;
 float y = 0.0f;
 float z = 0.0f;
+
+float cameraSpeed = 0.1f;  // Velocidad de movimiento de la cámara
+float mouseSensitivity = 0.1f;  // Sensibilidad del ratón para la rotación
+
+float angle = 0.0f;  // Variable de ángulo de rotación
+float yaw = -90.0f;  // Ángulo de giro en Y (horizontal)
+float pitch = 0.0f;  // Ángulo de giro en X (vertical)
+
+float lastX = 400, lastY = 300;  // Última posición conocida del ratón
+bool firstMouse = true;  // Para evitar saltos al inicio
 
 // Función para cargar la textura desde el archivo "Baker_house.png"
 bool loadTexture(const char* filename) {
@@ -119,18 +126,70 @@ static void display_func() {
     glDisable(GL_TEXTURE_2D);  // Desactivar texturas después de dibujar
 }
 
+//void keyboard(unsigned char key, int xMouse, int yMouse) {
+//    const float speedMultiplier = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) ? 2.0f : 1.0f;  // Duplicar velocidad si se presiona Shift
+//
+//    switch (key) {
+//    case 'w': x += cameraSpeed * speedMultiplier * cos(glm::radians(yaw)); z -= cameraSpeed * speedMultiplier * sin(glm::radians(yaw)); break;
+//    case 's': x -= cameraSpeed * speedMultiplier * cos(glm::radians(yaw)); z += cameraSpeed * speedMultiplier * sin(glm::radians(yaw)); break;
+//    case 'a': x -= cameraSpeed * speedMultiplier * sin(glm::radians(yaw)); z -= cameraSpeed * speedMultiplier * cos(glm::radians(yaw)); break;
+//    case 'd': x += cameraSpeed * speedMultiplier * sin(glm::radians(yaw)); z += cameraSpeed * speedMultiplier * cos(glm::radians(yaw)); break;
+//    case 'q': y += cameraSpeed * speedMultiplier; break;  // Movimiento en el eje Y (arriba)
+//    case ' ': y -= cameraSpeed * speedMultiplier; break;  // Movimiento en el eje Y (abajo)
+//    }
+//}
+//void mouseMotion(int xMouse, int yMouse) {
+//    if (firstMouse) {
+//        lastX = xMouse;
+//        lastY = yMouse;
+//        firstMouse = false;
+//    }
+//
+//    float xOffset = xMouse - lastX;
+//    float yOffset = lastY - yMouse;  // El movimiento Y es invertido
+//    lastX = xMouse;
+//    lastY = yMouse;
+//
+//    xOffset *= mouseSensitivity;
+//    yOffset *= mouseSensitivity;
+//
+//    yaw += xOffset;
+//    pitch += yOffset;
+//
+//    // Limitar el pitch para evitar que la cámara gire 360 grados en el eje X
+//    if (pitch > 89.0f) pitch = 89.0f;
+//    if (pitch < -89.0f) pitch = -89.0f;
+//}
+//void mouseWheel(int wheelDelta) {
+//    if (wheelDelta > 0) {  // Acercar
+//        z -= cameraSpeed;
+//    }
+//    else {  // Alejar
+//        z += cameraSpeed;
+//    }
+//}
+//
+//static void updateCamera() {
+//    glm::vec3 front;
+//    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+//    front.y = sin(glm::radians(pitch));
+//    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+//    glm::vec3 cameraFront = glm::normalize(front);
+//
+//    // Crear la matriz de vista con la nueva orientación y posición
+//    glm::vec3 cameraPosition = glm::vec3(x, y, z);
+//    glm::vec3 cameraTarget = cameraPosition + cameraFront;
+//    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+//
+//    // Usar glm::lookAt para crear la matriz de vista
+//    glm::mat4 view = glm::lookAt(cameraPosition, cameraTarget, up);
+//    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_SIZE.x / (float)WINDOW_SIZE.y, 0.1f, 100.0f);
+//
+//    // Pasar las matrices de vista y proyección a OpenGL
+//    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+//    glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+//}
 
-
-void keyboard(unsigned char key, int xMouse, int yMouse) {
-    switch (key) {
-    case 'w': x += 0.1f; break;
-    case 's': x -= 0.1f; break;
-    case 'a': z -= 0.1f; break;
-    case 'd': z += 0.1f; break;
-    case 'q': y += 0.1f; break;
-    case ' ': y -= 0.1f; break;
-    }
-}
 
 int main(int argc, char** argv) {
     MyWindow window("SDL2 Simple Example", WINDOW_SIZE.x, WINDOW_SIZE.y);
@@ -142,6 +201,19 @@ int main(int argc, char** argv) {
         fprintf(stderr, "Error al cargar el archivo: %s\n", aiGetErrorString());
         return -1;
     }
+
+    //while (window.processEvents() && window.isOpen()) {
+    //    const auto t0 = hrclock::now();
+
+    //    updateCamera();  // Actualizar la cámara
+    //    display_func();  // Dibujar el modelo
+
+    //    window.swapBuffers();
+
+    //    const auto t1 = hrclock::now();
+    //    const auto dt = t1 - t0;
+    //    if (dt < FRAME_DT) this_thread::sleep_for(FRAME_DT - dt);
+    //}
 
     // Extraer vértices, índices y coordenadas de textura
     for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
